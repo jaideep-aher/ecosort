@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoSort · Smart Waste Sorting</title>
+  <meta name="description" content="Snap a photo of any item and EcoSort tells you which bin it belongs in — powered by computer vision." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="site-header">
+    <div class="brand">
+      <span class="logo">♻️</span>
+      <span class="brand-name">EcoSort</span>
+    </div>
+    <nav class="header-meta">
+      <span class="pill" id="status-pill"><span class="dot"></span> model loading…</span>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Which bin does it go in?</h1>
+      <p class="subtitle">
+        Upload or snap a photo of an item. EcoSort uses a fine-tuned vision model to
+        classify it into one of six waste streams — and shows you <em>why</em>.
+      </p>
+    </section>
+
+    <section class="workspace">
+      <!-- Upload card -->
+      <div class="card upload-card">
+        <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload an image">
+          <div class="dz-empty" id="dz-empty">
+            <div class="dz-icon">📷</div>
+            <p class="dz-title">Drag &amp; drop an image</p>
+            <p class="dz-sub">or click to browse · use your camera on mobile</p>
+          </div>
+          <img id="preview" class="preview hidden" alt="Uploaded preview" />
+          <img id="heatmap" class="preview heatmap hidden" alt="Grad-CAM heatmap" />
+        </div>
+
+        <input type="file" id="file-input" accept="image/*" hidden />
+        <input type="file" id="camera-input" accept="image/*" capture="environment" hidden />
+
+        <div class="controls">
+          <button class="btn btn-primary" id="browse-btn">Choose image</button>
+          <button class="btn btn-ghost" id="camera-btn">Use camera</button>
+          <label class="toggle">
+            <input type="checkbox" id="heatmap-toggle" checked />
+            <span>Explain (Grad-CAM)</span>
+          </label>
+        </div>
+
+        <div class="samples">
+          <span class="samples-label">No photo handy? Try:</span>
+          <div class="sample-row" id="sample-row"></div>
+        </div>
+      </div>
+
+      <!-- Results card -->
+      <div class="card result-card" id="result-card">
+        <div class="result-placeholder" id="result-placeholder">
+          <div class="ph-icon">🧠</div>
+          <p>Your result will appear here.</p>
+        </div>
+
+        <div class="result-content hidden" id="result-content">
+          <div class="result-head" id="result-head">
+            <div class="verdict">
+              <span class="verdict-label">Goes in</span>
+              <h2 id="bin-name">—</h2>
+              <p class="prediction-line">
+                Detected: <strong id="pred-class">—</strong>
+                <span class="conf-badge" id="conf-badge">—</span>
+              </p>
+            </div>
+            <div class="verdict-emoji" id="verdict-emoji">♻️</div>
+          </div>
+
+          <p class="tip" id="tip">—</p>
+
+          <div class="bars" id="bars"></div>
+
+          <div class="compare hidden" id="compare-row">
+            <span>Classical model says:</span> <strong id="compare-text">—</strong>
+          </div>
+        </div>
+
+        <div class="result-loading hidden" id="result-loading">
+          <div class="spinner"></div>
+          <p>Analyzing…</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="explainer">
+      <div class="explain-grid">
+        <div class="explain-item"><span>1</span><p><strong>Naive baseline</strong> majority-class predictor sets the floor.</p></div>
+        <div class="explain-item"><span>2</span><p><strong>Classical ML</strong> Random Forest over colour + HOG features.</p></div>
+        <div class="explain-item"><span>3</span><p><strong>Deep model</strong> fine-tuned MobileNetV3 — what powers this demo.</p></div>
+      </div>
+      <p class="footnote">
+        Trained on the TrashNet dataset · CPU inference · Grad-CAM explanations.
+        <a href="https://github.com/jaideep-aher/ecosort" target="_blank" rel="noopener">View source on GitHub →</a>
+      </p>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
