@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.git/
+.github/
+notebooks/
+report/
+data/raw/
+data/processed/
+data/outputs/*.png
+*.log
+.DS_Store
